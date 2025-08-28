@@ -41,71 +41,154 @@ Sistem Verifikasi KTP & Wajah adalah aplikasi web berbasis AI yang mengotomatisa
 
 ## 🚀 **Quick Start**
 
-### **1. Clone Repository**
+> 📋 **For detailed setup on new laptop/computer, see:** [SETUP_GUIDE.md](SETUP_GUIDE.md)
+> 
+> 🎯 **Quick reference card:** [QUICK_REFERENCE.md](QUICK_REFERENCE.md)
+
+### **Auto Setup (Recommended):**
 ```bash
-git clone <repository-url>
-cd photo-detection
+# 1. Clone repository
+git clone https://github.com/deeztrzl/photo-detection-system.git
+cd photo-detection-system
+
+# 2. Auto setup
+# Windows:
+setup.bat
+
+# macOS/Linux:
+bash setup.sh
+
+# 3. Run application
+# Windows: double-click quick-start.bat
+# macOS/Linux: ./quick-start.sh
 ```
 
-### **2. Install Dependencies**
+### **Manual Setup:**
 ```bash
-# Install Python dependencies
+# 1. Clone repository
+git clone https://github.com/deeztrzl/photo-detection-system.git
+cd photo-detection-system
+
+# 2. Create virtual environment
+python -m venv .venv
+
+# 3. Activate virtual environment
+# Windows:
+.venv\Scripts\activate
+# macOS/Linux:
+source .venv/bin/activate
+
+# 4. Install dependencies
 pip install -r requirements.txt
+
+# 5. Run application
+python launcher.py
 ```
 
-### **3. Run Application**
+### **Validation & Testing:**
 ```bash
-# Windows
-scripts\run.bat
+# Validate system before running
+python validate_system.py
 
-# macOS/Linux
-chmod +x scripts/run.sh
-./scripts/run.sh
-
-# Or directly with Python
-python app.py
+# Quick test
+python -c "import cv2, mediapipe, flask; print('✅ All systems ready!')"
 ```
 
-### **4. Access Application**
-Open browser dan akses: **http://localhost:5000**
+### **Access Application:**
+- **Main App:** http://localhost:8080
+- **Jitsi Demo:** http://localhost:5001  
+- **Bridge Server:** http://localhost:5002
+
+---
+
+## 📚 **Documentation & Guides**
+
+### **Setup Guides:**
+- 📋 **[SETUP_GUIDE.md](SETUP_GUIDE.md)** - Panduan lengkap setup di laptop baru
+- � **[MACOS_SETUP_GUIDE.md](MACOS_SETUP_GUIDE.md)** - Panduan khusus macOS & troubleshooting
+- �🎯 **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** - Quick reference card (bisa dicetak)
+- 🔧 **[DETECTOR_SWITCHING_GUIDE.md](DETECTOR_SWITCHING_GUIDE.md)** - Cara ganti tipe detector
+
+### **Auto Setup Scripts:**
+- 🪟 **`setup.bat`** - Auto setup untuk Windows
+- 🐧 **`setup.sh`** - Auto setup untuk Linux
+- 🍎 **`setup-macos.sh`** - Auto setup khusus macOS (with Homebrew)
+- 🚀 **`quick-start.bat/.sh`** - Quick launcher scripts
+- 🧪 **`validate_system.py`** - System validation tool
+
+### **Project Documentation:**
+- 📖 **[docs/USER_MANUAL.md](docs/USER_MANUAL.md)** - Manual pengguna lengkap
+- 👨‍💻 **[docs/DEVELOPER_GUIDE.md](docs/DEVELOPER_GUIDE.md)** - Panduan development
+- 🏗️ **[docs/PROJECT_OVERVIEW.md](docs/PROJECT_OVERVIEW.md)** - Overview arsitektur
+- 🔗 **[docs/JITSI_INTEGRATION_GUIDE.md](docs/JITSI_INTEGRATION_GUIDE.md)** - Integrasi video call
 
 ---
 
 ## 📁 **Project Structure**
 
 ```
-photo-detection/
-├── 📄 Core Application
-│   ├── app.py                    # Main Flask application
-│   ├── requirements.txt          # Python dependencies
-│   └── README.md                 # Main documentation
+photo-detection-system/
+├── � Main Application
+│   ├── launcher.py               # Main launcher with menu
+│   ├── requirements.txt          # Python dependencies  
+│   ├── README.md                 # This documentation
+│   └── .venv/                    # Virtual environment
 │
-├── 🌐 Web Interface
-│   ├── templates/
-│   │   └── index.html           # Web UI interface
-│   └── static/                  # Generated images & assets
+├── 📱 Application Modules
+│   └── modules/
+│       ├── main_detection/       # Core detection system
+│       │   ├── app.py           # Flask web application
+│       │   ├── detection/       # AI detection modules
+│       │   │   ├── main_detector.py        # Main coordinator
+│       │   │   ├── ktp_detector_*.py       # KTP detection variants
+│       │   │   ├── face_detector.py        # Face detection
+│       │   │   └── template_manager.py     # Template management
+│       │   ├── core/            # Core configuration
+│       │   ├── routes/          # Flask routes
+│       │   └── templates/       # HTML templates
+│       │
+│       └── jitsi_system/        # Video call integration
+│           ├── jitsi_bridge.py  # Integration bridge
+│           ├── jitsi_dummy.py   # Demo system
+│           └── browser_extension/  # Chrome extension
 │
-├── 📚 Documentation
-│   └── docs/
-│       ├── USER_MANUAL.md         # Complete user manual
-│       ├── DEVELOPER_GUIDE.md     # Advanced development guide
-│       └── PROJECT_OVERVIEW.md    # Comprehensive project overview
+├── 📚 Documentation & Guides
+│   ├── SETUP_GUIDE.md           # 📋 Panduan setup lengkap
+│   ├── QUICK_REFERENCE.md       # 🎯 Quick reference card
+│   ├── DETECTOR_SWITCHING_GUIDE.md  # 🔧 Cara ganti detector
+│   └── docs/                    # Technical documentation
+│       ├── USER_MANUAL.md       # Manual pengguna
+│       ├── DEVELOPER_GUIDE.md   # Panduan development
+│       ├── PROJECT_OVERVIEW.md  # Overview arsitektur
+│       └── JITSI_INTEGRATION_GUIDE.md  # Integrasi video call
+│
+├── 🛠️ Setup & Automation Scripts
+│   ├── setup.bat               # 🪟 Auto setup Windows
+│   ├── setup.sh                # 🐧 Auto setup macOS/Linux
+│   ├── quick-start.bat         # 🚀 Quick launcher Windows
+│   ├── quick-start.sh          # 🚀 Quick launcher macOS/Linux
+│   ├── validate_system.py      # 🧪 System validation
+│   └── scripts/
+│       ├── run.bat             # Legacy Windows runner
+│       └── run.sh              # Legacy macOS/Linux runner
+│
+├── 🎨 Assets & Templates
+│   ├── assets/
+│   │   ├── ktp muka.png        # KTP template image
+│   │   └── template_*.png      # Various template variants
+│   │
+│   └── static/                 # Generated captures & static files
 │
 ├── 🎤 Presentation Materials
 │   └── presentation/
 │       ├── EXECUTIVE_SUMMARY.md   # Business overview
 │       ├── SLIDE_PRESENTATION.md  # Complete slide deck
-│       ├── PRESENTASI.md         # Detailed presentation content
+│       ├── PRESENTASI.md         # Detailed presentation
 │       └── SPEAKING_NOTES.md     # Presenter guidelines
 │
-├── 🛠️ Scripts & Tools
-│   └── scripts/
-│       ├── run.bat              # Windows runner
-│       └── run.sh               # Linux/macOS runner
-│
-└── 🎨 Assets
-    └── assets/
-        └── ktp muka.png         # Sample KTP image
+└── � Configuration
+    ├── .gitignore              # Git ignore rules
+    └── config/                 # Configuration files
 ```
 
 ---

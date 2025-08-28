@@ -1,3 +1,0 @@
-cd "c:\Users\rdest\OneDrive\Documents\photo-detection"
-
-c:/Users/rdest/OneDrive/Documents/photo-detection/.venv/Scripts/python.exe launcher.py
