@@ -1,11 +1,11 @@
 """
 Main Detection Coordinator
-Mengkoordinasikan deteksi wajah dan KTP dengan template-based approach
+Mengkoordinasikan deteksi wajah dan KTP dengan 2-layer detection approach
 """
 import cv2
 import numpy as np
 from detection.face_detector import detect_face
-from detection.ktp_detector_template_based import detect_ktp_template_based
+from detection.ktp_detector import detect_ktp_candidates_by_color_and_shape, verify_ktp_candidate_by_template
 
 def detect_face_and_ktp(frame):
     """
@@ -19,17 +19,23 @@ def detect_face_and_ktp(frame):
         # Face detection
         face_img = detect_face(frame)
         
-        # KTP detection menggunakan template-based approach dengan adaptive performance
-        ktp_detections = detect_ktp_template_based(frame, performance_mode='fast')  # Use fast mode for real-time
+        # KTP detection menggunakan 2-layer detection system
+        candidates = detect_ktp_candidates_by_color_and_shape(frame)
         
         ktp_img = None
         ktp_face_img = None
+        best_confidence = 0.0
+        best_candidate = None
         
-        if ktp_detections:
-            # Ambil deteksi terbaik
-            best_detection = ktp_detections[0]
-            bbox = best_detection['bbox']
-            x, y, w, h = bbox
+        # Verifikasi setiap kandidat dengan layer 2
+        for candidate in candidates:
+            confidence, result = verify_ktp_candidate_by_template(frame, candidate)
+            if confidence > best_confidence:
+                best_confidence = confidence
+                best_candidate = candidate
+        
+        if best_candidate and best_confidence > 0.35:  # Threshold minimum
+            x, y, w, h, area, blue_ratio = best_candidate
             
             # Extract KTP region
             ktp_img = frame[y:y+h, x:x+w]
@@ -38,8 +44,7 @@ def detect_face_and_ktp(frame):
             if ktp_img is not None and ktp_img.size > 0:
                 ktp_face_img = detect_face(ktp_img)
             
-            mode_used = best_detection.get('analysis_mode', 'unknown')
-            print(f"✅ KTP detected with confidence: {best_detection.get('combined_confidence', 0):.3f} (mode: {mode_used})")
+            print(f"✅ KTP detected with confidence: {best_confidence:.3f} (2-layer detection)")
         
         return face_img, ktp_img, ktp_face_img
         
@@ -53,7 +58,7 @@ def get_detection_info():
     Return informasi tentang metode deteksi yang digunakan
     """
     return {
-        'method': 'Template-Based Detection',
-        'description': 'Menggunakan template_ktp.png sebagai referensi',
-        'features': ['Multi-scale template matching', 'Validation checks', 'Confidence scoring']
+        'method': '2-Layer Detection System',
+        'description': 'Layer 1: Color & Shape detection, Layer 2: Pattern verification',
+        'features': ['Blue header detection', 'Shape analysis', 'Pattern matching', '7-point verification']
     }
