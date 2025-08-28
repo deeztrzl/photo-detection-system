@@ -1,7 +1,11 @@
 # 📸 Sistem Verifikasi KTP & Wajah
 ## Photo Detection AI dengan MediaPipe & OpenCV
 
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
+[![Python](https:/### **Setup Guides:**
+- 📋 **[guides/SETUP_GUIDE.md](guides/SETUP_GUIDE.md)** - Panduan lengkap setup di laptop baru
+- 🍎 **[guides/MACOS_SETUP_GUIDE.md](guides/MACOS_SETUP_GUIDE.md)** - Panduan khusus macOS & troubleshooting
+- 🎯 **[guides/QUICK_REFERENCE.md](guides/QUICK_REFERENCE.md)** - Quick reference card (bisa dicetak)
+- 🔧 **[guides/DETECTOR_SWITCHING_GUIDE.md](guides/DETECTOR_SWITCHING_GUIDE.md)** - Cara ganti tipe detectorshields.io/badge/Python-3.8+-blue.svg)](https://python.org)
 [![Flask](https://img.shields.io/badge/Flask-2.3+-green.svg)](https://flask.palletsprojects.com)
 [![OpenCV](https://img.shields.io/badge/OpenCV-4.8+-red.svg)](https://opencv.org)
 [![MediaPipe](https://img.shields.io/badge/MediaPipe-0.10+-orange.svg)](https://mediapipe.dev)
@@ -41,9 +45,9 @@ Sistem Verifikasi KTP & Wajah adalah aplikasi web berbasis AI yang mengotomatisa
 
 ## 🚀 **Quick Start**
 
-> 📋 **For detailed setup on new laptop/computer, see:** [SETUP_GUIDE.md](SETUP_GUIDE.md)
+> 📋 **For detailed setup on new laptop/computer, see:** [guides/SETUP_GUIDE.md](guides/SETUP_GUIDE.md)
 > 
-> 🎯 **Quick reference card:** [QUICK_REFERENCE.md](QUICK_REFERENCE.md)
+> 🎯 **Quick reference card:** [guides/QUICK_REFERENCE.md](guides/QUICK_REFERENCE.md)
 
 ### **Auto Setup (Recommended):**
 ```bash
@@ -53,10 +57,10 @@ cd photo-detection-system
 
 # 2. Auto setup
 # Windows:
-setup.bat
+setup/setup.bat
 
 # macOS/Linux:
-bash setup.sh
+bash setup/setup.sh
 
 # 3. Run application
 # Windows: double-click quick-start.bat
@@ -88,7 +92,7 @@ python launcher.py
 ### **Validation & Testing:**
 ```bash
 # Validate system before running
-python validate_system.py
+python setup/validate_system.py
 
 # Quick test
 python -c "import cv2, mediapipe, flask; print('✅ All systems ready!')"
@@ -110,11 +114,15 @@ python -c "import cv2, mediapipe, flask; print('✅ All systems ready!')"
 - 🔧 **[DETECTOR_SWITCHING_GUIDE.md](DETECTOR_SWITCHING_GUIDE.md)** - Cara ganti tipe detector
 
 ### **Auto Setup Scripts:**
-- 🪟 **`setup.bat`** - Auto setup untuk Windows
-- 🐧 **`setup.sh`** - Auto setup untuk Linux
-- 🍎 **`setup-macos.sh`** - Auto setup khusus macOS (with Homebrew)
-- 🚀 **`quick-start.bat/.sh`** - Quick launcher scripts
-- 🧪 **`validate_system.py`** - System validation tool
+- 🪟 **[setup/setup.bat](setup/setup.bat)** - Auto setup untuk Windows
+- 🐧 **[setup/setup.sh](setup/setup.sh)** - Auto setup untuk Linux
+- 🍎 **[setup/setup-macos.sh](setup/setup-macos.sh)** - Auto setup khusus macOS (with Homebrew)
+- 🧪 **[setup/validate_system.py](setup/validate_system.py)** - System validation tool
+
+### **Development Tools:**
+- 🔧 **[tools/template_analyzer.py](tools/template_analyzer.py)** - Template analysis tool
+- 🧪 **[tools/test_enhanced_templates.py](tools/test_enhanced_templates.py)** - Template testing
+- 📺 **[tools/screen_overlay.py](tools/screen_overlay.py)** - Screen overlay utility
 
 ### **Project Documentation:**
 - 📖 **[docs/USER_MANUAL.md](docs/USER_MANUAL.md)** - Manual pengguna lengkap
@@ -152,25 +160,28 @@ photo-detection-system/
 │           ├── jitsi_dummy.py   # Demo system
 │           └── browser_extension/  # Chrome extension
 │
-├── 📚 Documentation & Guides
-│   ├── SETUP_GUIDE.md           # 📋 Panduan setup lengkap
-│   ├── QUICK_REFERENCE.md       # 🎯 Quick reference card
-│   ├── DETECTOR_SWITCHING_GUIDE.md  # 🔧 Cara ganti detector
-│   └── docs/                    # Technical documentation
-│       ├── USER_MANUAL.md       # Manual pengguna
-│       ├── DEVELOPER_GUIDE.md   # Panduan development
-│       ├── PROJECT_OVERVIEW.md  # Overview arsitektur
-│       └── JITSI_INTEGRATION_GUIDE.md  # Integrasi video call
+├── 📚 **Documentation & Guides**
+│   └── guides/
+│       ├── SETUP_GUIDE.md      # 📋 Complete setup guide
+│       ├── MACOS_SETUP_GUIDE.md # 🍎 macOS-specific guide
+│       ├── QUICK_REFERENCE.md  # 🎯 Quick reference card
+│       ├── DETECTOR_SWITCHING_GUIDE.md # 🔧 Detector switching
+│       └── README.md           # Guides navigation
 │
-├── 🛠️ Setup & Automation Scripts
-│   ├── setup.bat               # 🪟 Auto setup Windows
-│   ├── setup.sh                # 🐧 Auto setup macOS/Linux
-│   ├── quick-start.bat         # 🚀 Quick launcher Windows
-│   ├── quick-start.sh          # 🚀 Quick launcher macOS/Linux
-│   ├── validate_system.py      # 🧪 System validation
-│   └── scripts/
-│       ├── run.bat             # Legacy Windows runner
-│       └── run.sh              # Legacy macOS/Linux runner
+├── 🛠️ **Setup & Installation Scripts**
+│   └── setup/
+│       ├── setup.bat           # 🪟 Windows auto-setup
+│       ├── setup.sh            # 🐧 Linux auto-setup  
+│       ├── setup-macos.sh      # 🍎 macOS auto-setup (Homebrew)
+│       ├── validate_system.py  # 🧪 System validation
+│       └── README.md           # Setup folder guide
+│
+├── 🔧 **Development & Debug Tools**
+│   └── tools/
+│       ├── template_analyzer.py    # Template analysis tool
+│       ├── test_enhanced_templates.py # Template testing
+│       ├── screen_overlay.py       # Screen overlay utility
+│       └── README.md               # Tools folder guide
 │
 ├── 🎨 Assets & Templates
 │   ├── assets/

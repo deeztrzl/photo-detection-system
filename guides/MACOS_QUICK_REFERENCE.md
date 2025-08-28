@@ -33,7 +33,7 @@ chmod +x setup-macos.sh
 ./quick-start.sh
 
 # Validate System
-python validate_system.py
+python setup/validate_system.py
 
 # Activate Virtual Environment
 source .venv/bin/activate
@@ -132,7 +132,7 @@ pip install mediapipe==0.10.3
 # Add to ~/.zshrc or ~/.bash_profile
 alias photo='cd ~/photo-detection-system && ./quick-start.sh'
 alias photo-setup='cd ~/photo-detection-system && ./setup-macos.sh'
-alias photo-test='cd ~/photo-detection-system && python validate_system.py'
+alias photo-test='cd ~/photo-detection-system && python setup/validate_system.py'
 
 # === DOCK SHORTCUT ===
 # Create app bundle

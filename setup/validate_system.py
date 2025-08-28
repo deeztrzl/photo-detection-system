@@ -276,9 +276,9 @@ def main():
     if not results["Port Availability"]:
         print("💡 Some ports in use - application will try alternative ports")
     
-    print("\n📚 For detailed setup guide, see: guides/SETUP_GUIDE.md")
-    print("🎯 Quick reference: guides/QUICK_REFERENCE.md")
-    print("🍎 macOS users: guides/MACOS_SETUP_GUIDE.md")
+    print("\n📚 For detailed setup guide, see: ../guides/SETUP_GUIDE.md")
+    print("🎯 Quick reference: ../guides/QUICK_REFERENCE.md")
+    print("🍎 macOS users: ../guides/MACOS_SETUP_GUIDE.md")
     
     return 0 if system_ready else 1
 

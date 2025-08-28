@@ -115,7 +115,7 @@ echo    python launcher.py
 echo.
 echo 2. Open browser: http://localhost:8080
 echo.
-echo 💡 Need help? Check guides/SETUP_GUIDE.md
+echo 💡 Need help? Check ../guides/SETUP_GUIDE.md
 echo 🐛 Found bugs? Report at GitHub repository
 echo.
 echo ✨ Happy detecting! 📸

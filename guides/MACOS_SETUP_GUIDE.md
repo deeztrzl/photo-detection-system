@@ -267,7 +267,7 @@ defaults write com.apple.Terminal NSAppSleepDisabled -bool YES
 ### **System Test:**
 ```bash
 # Run comprehensive test
-python validate_system.py
+python ../setup/validate_system.py
 
 # Quick camera test
 python3 -c "
@@ -321,7 +321,7 @@ python3 -c "import cv2; print('Camera:', 'OK' if cv2.VideoCapture(0).isOpened() 
 
 **🆘 Need Help?**
 - Check [SETUP_GUIDE.md](SETUP_GUIDE.md) untuk troubleshooting umum
-- Run `python validate_system.py` untuk diagnosis lengkap
+- Run `python ../setup/validate_system.py` untuk diagnosis lengkap
 - Report macOS-specific issues di GitHub repository
 
 **✅ Happy coding on macOS! 🍎**

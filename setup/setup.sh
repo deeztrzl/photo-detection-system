@@ -5,7 +5,7 @@
 echo "📸 Photo Detection System - Auto Setup"
 echo "======echo "2. Open browser: http://localhost:8080"
 echo ""
-echo "💡 Need help? Check guides/SETUP_GUIDE.md"
+echo "💡 Need help? Check ../guides/SETUP_GUIDE.md"
 echo "🐛 Found bugs? Report at GitHub repository"============================"
 
 # Deteksi OS
