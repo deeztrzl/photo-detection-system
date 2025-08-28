@@ -1,0 +1,3 @@
+Full Frame Capture - Manual Mode
+Base Resolution: 640x480
+Timestamp: 20250826_150045

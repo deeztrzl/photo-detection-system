@@ -1,0 +1,9 @@
+=== KTP CAPTURE - MANUAL MODE ===
+Timestamp: 20250826_150350
+CS ID: CS_ad4br8enj
+Nasabah ID: NASABAH_ezcgsqhqn
+Mode: manual
+Coordinates: (186, 279, 268, 170)
+Area: KTP document area (rectangle)
+Resolution: 268x170 pixels
+Generated: 2025-08-26T15:03:50.161233

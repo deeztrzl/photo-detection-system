@@ -1,0 +1,3 @@
+Face Capture - Manual Mode
+Coordinates: (216, 31, 207, 223)
+Timestamp: 20250826_150045

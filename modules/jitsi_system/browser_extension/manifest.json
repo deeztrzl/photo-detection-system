@@ -1,0 +1,54 @@
+{
+  "manifest_version": 3,
+  "name": "Jitsi KTP Capture",
+  "version": "1.0.0",
+  "description": "KTP and Face capture extension for Jitsi Meet",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "downloads"
+  ],
+  "host_permissions": [
+    "https://meet.jit.si/*",
+    "https://*.jitsi.net/*",
+    "https://8x8.vc/*",
+    "http://localhost:5001/*"
+  ],
+  "content_scripts": [{
+    "matches": [
+      "https://meet.jit.si/*",
+      "https://*.jitsi.net/*",
+      "https://8x8.vc/*"
+    ],
+    "js": [
+      "libs/socket.io.min.js",
+      "capture-engine.js",
+      "jitsi-injector.js"
+    ],
+    "css": ["styles/overlay.css"],
+    "run_at": "document_idle"
+  }],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "KTP Capture Controls",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [{
+    "resources": ["icons/*", "styles/*"],
+    "matches": ["https://meet.jit.si/*", "https://*.jitsi.net/*", "https://8x8.vc/*"]
+  }]
+}

@@ -1,0 +1,11 @@
+=== FULL FRAME CAPTURE - MANUAL MODE ===
+Timestamp: 20250826_150350
+CS ID: CS_ad4br8enj
+Nasabah ID: NASABAH_ezcgsqhqn
+Mode: manual
+Base Resolution: 640x480
+Padding: H=186px, V=31px
+Gap: 25px
+Face Area: 216,31 - 207x223
+KTP Area: 186,279 - 268x170
+Generated: 2025-08-26T15:03:50.162599

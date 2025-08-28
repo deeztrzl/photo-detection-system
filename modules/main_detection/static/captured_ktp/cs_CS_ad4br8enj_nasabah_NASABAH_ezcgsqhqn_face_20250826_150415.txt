@@ -1,0 +1,9 @@
+=== FACE CAPTURE - MANUAL MODE ===
+Timestamp: 20250826_150415
+CS ID: CS_ad4br8enj
+Nasabah ID: NASABAH_ezcgsqhqn
+Mode: manual
+Coordinates: (216, 31, 207, 223)
+Area: Face detection area (oval)
+Resolution: 207x223 pixels
+Generated: 2025-08-26T15:04:15.980723

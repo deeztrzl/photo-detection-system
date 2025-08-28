@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi KTP & Wajah</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+        .container { max-width: 1200px; margin: 40px auto; background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h2 { text-align: center; margin-bottom: 30px; }
+        
+        .main-content { display: flex; gap: 30px; align-items: flex-start; }
+        .camera-section { flex: 1; }
+        .results-section { flex: 1; }
+        
+        #video-stream { width: 100%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        
+        .btn-capture { display: block; width: 100%; padding: 12px; background: #007bff; color: #fff; border: none; border-radius: 6px; font-size: 18px; cursor: pointer; margin-top: 16px; }
+        .btn-capture:hover { background: #0056b3; }
+        .mode-toggle { margin-bottom: 16px; text-align: center; }
+        .toggle-switch { display: inline-block; position: relative; width: 60px; height: 30px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 30px; }
+        .slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #007bff; }
+        input:checked + .slider:before { transform: translateX(30px); }
+        .mode-label { margin: 0 10px; font-weight: bold; }
+        
+        .result-img { width: 100%; margin-bottom: 15px; border-radius: 6px; border: 1px solid #ccc; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .result-item { margin-bottom: 20px; }
+        .result-title { font-weight: bold; margin-bottom: 8px; color: #333; }
+        
+        .status-indicator { margin: 16px 0; padding: 12px; border-radius: 6px; text-align: center; font-weight: bold; }
+        .status-waiting { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .status-partial { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .status-ready { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .detection-status { display: flex; justify-content: space-around; margin: 12px 0; }
+        .detection-item { padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: bold; }
+        .detected { background: #28a745; color: white; }
+        .not-detected { background: #dc3545; color: white; }
+        .countdown-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .countdown-number { font-size: 150px; color: white; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); animation: pulse 1s ease-in-out; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        
+        @media (max-width: 768px) {
+            .main-content { flex-direction: column; }
+            .container { margin: 20px; padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Verifikasi KTP & Wajah</h2>
+        
+        <div class="mode-toggle">
+            <span class="mode-label">Otomatis</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="modeToggle" onchange="toggleMode()">
+                <span class="slider"></span>
+            </label>
+            <span class="mode-label">Manual</span>
+        </div>
+        
+        <div class="main-content">
+            <!-- Sektion Kamera (Kiri) -->
+            <div class="camera-section">
+                <img id="video-stream" src="/video_feed" alt="Video Stream">
+                
+                <div id="status-indicator" class="status-indicator status-waiting">
+                    Menunggu deteksi...
+                </div>
+                
+                <div class="detection-status">
+                    <div id="face-status" class="detection-item not-detected">👤 Wajah: Tidak Terdeteksi</div>
+                    <div id="ktp-status" class="detection-item not-detected">🆔 KTP: Tidak Terdeteksi</div>
+                </div>
+                
+                <button class="btn-capture" onclick="capture()">Capture Wajah & KTP</button>
+            </div>
+            
+            <!-- Sektor Hasil (Kanan) -->
+            <div class="results-section">
+                <div class="result-item">
+                    <div class="result-title">Hasil Wajah:</div>
+                    <img id="face-result" class="result-img" src="" alt="Hasil Wajah" style="display: none;">
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title">Hasil KTP:</div>
+                    <img id="ktp-result" class="result-img" src="" alt="Hasil KTP" style="display: none;">
+                </div>
+                
+                <button id="download-btn" class="btn-capture" onclick="downloadResults()" style="display: none; background: #28a745; margin-top: 20px;">
+                    📥 Download Hasil
+                </button>
+            </div>
+        </div>
+        
+        <!-- Countdown Overlay -->
+        <div id="countdown-overlay" class="countdown-overlay">
+            <div id="countdown-number" class="countdown-number">3</div>
+        </div>
+    </div>
+    <script>
+        let currentMode = 'auto';
+        let detectionInterval;
+        let lastDownloadUrl = '';
+        let lastTimestamp = '';
+        
+        // Mulai monitoring deteksi saat halaman dimuat
+        window.onload = function() {
+            startDetectionMonitoring();
+        };
+        
+        function startDetectionMonitoring() {
+            // Clear interval sebelumnya jika ada
+            if (detectionInterval) {
+                clearInterval(detectionInterval);
+            }
+            
+            // Update status deteksi setiap 500ms
+            detectionInterval = setInterval(updateDetectionStatus, 500);
+        }
+        
+        function updateDetectionStatus() {
+            fetch('/detection_status')
+                .then(response => response.json())
+                .then(data => {
+                    const faceStatus = document.getElementById('face-status');
+                    const ktpStatus = document.getElementById('ktp-status');
+                    const statusIndicator = document.getElementById('status-indicator');
+                    
+                    // Update status wajah
+                    if (data.face_detected) {
+                        faceStatus.className = 'detection-item detected';
+                        faceStatus.textContent = '👤 Wajah: Terdeteksi';
+                    } else {
+                        faceStatus.className = 'detection-item not-detected';
+                        faceStatus.textContent = '👤 Wajah: Tidak Terdeteksi';
+                    }
+                    
+                    // Update status KTP
+                    if (data.ktp_detected) {
+                        ktpStatus.className = 'detection-item detected';
+                        ktpStatus.textContent = '🆔 KTP: Terdeteksi';
+                    } else {
+                        ktpStatus.className = 'detection-item not-detected';
+                        ktpStatus.textContent = '🆔 KTP: Tidak Terdeteksi';
+                    }
+                    
+                    // Update indikator status keseluruhan
+                    if (currentMode === 'auto') {
+                        if (data.countdown && data.countdown.active) {
+                            // Tampilkan countdown
+                            showCountdown(data.countdown.remaining);
+                            statusIndicator.className = 'status-indicator status-ready';
+                            statusIndicator.textContent = `🎯 Bersiap untuk capture! Countdown: ${data.countdown.remaining}`;
+                        } else if (data.both_detected) {
+                            statusIndicator.className = 'status-indicator status-ready';
+                            statusIndicator.textContent = '✅ Siap untuk capture otomatis! Kedua objek terdeteksi.';
+                        } else if (data.face_detected || data.ktp_detected) {
+                            statusIndicator.className = 'status-indicator status-partial';
+                            if (data.face_detected && !data.ktp_detected) {
+                                statusIndicator.textContent = '⚠️ Wajah terdeteksi. Silakan tunjukkan KTP.';
+                            } else if (!data.face_detected && data.ktp_detected) {
+                                statusIndicator.textContent = '⚠️ KTP terdeteksi. Silakan posisikan wajah.';
+                            }
+                        } else {
+                            statusIndicator.className = 'status-indicator status-waiting';
+                            statusIndicator.textContent = '🔍 Menunggu deteksi wajah dan KTP...';
+                        }
+                    } else {
+                        statusIndicator.className = 'status-indicator status-waiting';
+                        statusIndicator.textContent = '📷 Mode manual - Klik capture untuk mengambil gambar langsung.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating detection status:', error);
+                });
+        }
+        
+        function showCountdown(number) {
+            const overlay = document.getElementById('countdown-overlay');
+            const countdownNumber = document.getElementById('countdown-number');
+            
+            if (number > 0) {
+                countdownNumber.textContent = number;
+                overlay.style.display = 'flex';
+            } else {
+                overlay.style.display = 'none';
+            }
+        }
+        
+        function toggleMode() {
+            const toggle = document.getElementById('modeToggle');
+            const newMode = toggle.checked ? 'manual' : 'auto';
+            
+            fetch('/toggle_mode', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({mode: newMode})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    currentMode = data.mode;
+                    updateUI();
+                    updateDetectionStatus(); // Update status immediately
+                }
+            });
+        }
+        
+        function updateUI() {
+            const button = document.querySelector('.btn-capture');
+            if (currentMode === 'manual') {
+                button.textContent = 'Capture Langsung';
+            } else {
+                button.textContent = 'Capture Otomatis';
+            }
+        }
+        
+        function capture() {
+            const button = document.querySelector('.btn-capture');
+            const originalText = button.textContent;
+            
+            // Disable button dan tampilkan loading
+            button.disabled = true;
+            
+            // Stop detection monitoring sementara saat capture
+            if (detectionInterval) {
+                clearInterval(detectionInterval);
+            }
+            
+            if (currentMode === 'auto') {
+                button.textContent = 'Menunggu deteksi kedua objek...';
+                button.style.backgroundColor = '#ffc107';
+                
+                // Update status indicator
+                const statusIndicator = document.getElementById('status-indicator');
+                statusIndicator.className = 'status-indicator status-waiting';
+                statusIndicator.textContent = '⏳ Sedang menunggu deteksi wajah dan KTP secara bersamaan...';
+            } else {
+                button.textContent = 'Memproses...';
+                button.style.backgroundColor = '#ffc107';
+            }
+            
+            fetch('/capture', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    // Update gambar hasil
+                    if (data.face_url) {
+                        const faceResult = document.getElementById('face-result');
+                        faceResult.src = data.face_url + '?t=' + Date.now();
+                        faceResult.style.display = 'block';
+                    }
+                    if (data.ktp_url) {
+                        const ktpResult = document.getElementById('ktp-result');
+                        ktpResult.src = data.ktp_url + '?t=' + Date.now();
+                        ktpResult.style.display = 'block';
+                    }
+                    
+                    // Sembunyikan countdown jika masih tampil
+                    showCountdown(0);
+                    
+                    // Auto download jika capture berhasil
+                    if (data.status === 'success' && data.download_url) {
+                        lastDownloadUrl = data.download_url;
+                        lastTimestamp = data.timestamp;
+                        
+                        // Tampilkan tombol download manual
+                        document.getElementById('download-btn').style.display = 'block';
+                        
+                        setTimeout(() => {
+                            const link = document.createElement('a');
+                            link.href = data.download_url;
+                            link.download = `hasil_capture_${data.timestamp}.zip`;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                        }, 1000); // Delay 1 detik setelah update gambar
+                    }
+                    
+                    // Tampilkan pesan status
+                    alert(data.message);
+                    
+                    // Reset button
+                    button.disabled = false;
+                    button.textContent = originalText;
+                    
+                    if (data.status === 'success') {
+                        button.style.backgroundColor = '#28a745';
+                        setTimeout(() => {
+                            button.style.backgroundColor = '#007bff';
+                        }, 2000);
+                    } else {
+                        button.style.backgroundColor = '#dc3545';
+                        setTimeout(() => {
+                            button.style.backgroundColor = '#007bff';
+                        }, 2000);
+                    }
+                    
+                    // Restart detection monitoring
+                    startDetectionMonitoring();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    button.disabled = false;
+                    button.textContent = originalText;
+                    button.style.backgroundColor = '#007bff';
+                    alert('Terjadi kesalahan saat capture');
+                    
+                    // Restart detection monitoring even on error
+                    startDetectionMonitoring();
+                });
+        }
+        
+        function downloadResults() {
+            if (lastDownloadUrl) {
+                const link = document.createElement('a');
+                link.href = lastDownloadUrl;
+                link.download = `hasil_capture_${lastTimestamp}.zip`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+    </script>
+</body>
+</html>
